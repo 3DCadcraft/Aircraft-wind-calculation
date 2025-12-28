@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calcul Vent </title>
+<title>Calcul Vent IFR</title>
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -23,11 +23,11 @@ button, input, select {
 </head>
 <body>
 
-<h1>Calcul Vent </h1>
+<h1>Calcul Vent – IFR</h1>
 
 <select id="mode">
     <option value="train">Entraînement</option>
-    <option value="exam">Examen </option>
+    <option value="exam">Examen IFR</option>
 </select><br><br>
 
 <button onclick="start()">Démarrer</button>
@@ -146,8 +146,8 @@ function finish() {
         Temps : ${time} s
     `;
 }
-</script>
-<script>
+
+// --- Service Worker registration ---
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js')
     .then(reg => console.log('Service Worker enregistré.', reg))
