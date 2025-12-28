@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calcul Vent </title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background:#111;
+    color:#eee;
+    text-align:center;
+}
+button, input, select {
+    font-size:1.1em;
+    padding:6px;
+    margin:5px;
+}
+.box { margin:15px; font-size:1.3em; }
+.feedback { color:#0f0; }
+.hidden { display:none; }
+</style>
+</head>
+<body>
+
+<h1>Calcul Vent </h1>
+
+<select id="mode">
+    <option value="train">Entraînement</option>
+    <option value="exam">Examen </option>
+</select><br><br>
+
+<button onclick="start()">Démarrer</button>
+
+<div class="box" id="question"></div>
+
+<div id="inputs" class="hidden">
+    HW <input type="number" id="hw"> kt
+    XW <input type="number" id="xw"> kt<br>
+    <button onclick="validate()">Valider</button>
+</div>
+
+<div class="box" id="feedback"></div>
+
+<button id="nextBtn" class="hidden" onclick="next()">Suivant</button>
+
+<div class="box" id="result"></div>
+
+<script>
+const sinTable = {0:0,10:0.2,20:0.3,30:0.5,40:0.6,50:0.7,60:0.8,70:0.9,80:1,90:1};
+const cosTable = {0:1,10:1,20:0.9,30:0.8,40:0.7,50:0.6,60:0.5,70:0.3,80:0.2,90:0};
+
+let count, score, startTime;
+let solution = {};
+let exam = false;
+let tolerance = 1;
+
+function start() {
+    count = 0;
+    score = 0;
+    exam = document.getElementById("mode").value === "exam";
+    tolerance = exam ? 0 : 1;
+
+    document.getElementById("result").innerHTML = "";
+    document.getElementById("feedback").innerHTML = "";
+    document.getElementById("inputs").classList.remove("hidden");
+    document.getElementById("nextBtn").classList.add("hidden");
+
+    startTime = Date.now();
+    next();
+}
+
+function next() {
+    if (count === 10) {
+        finish();
+        return;
+    }
+
+    count++;
+
+    const qfu = Math.floor(Math.random()*36) + 1;
+    const runway = qfu * 10;
+
+    const windDirRaw = Math.floor(Math.random()*360) + 1;
+    const windSpeed = Math.floor(Math.random()*33) + 3;
+
+    const windDir = Math.round(windDirRaw / 10) * 10; // ARRONDI AVANT AFFICHAGE
+
+    let alpha = Math.abs(windDir - runway);
+    if (alpha > 180) alpha = 360 - alpha;
+    if (alpha > 90) alpha = 180 - alpha;
+    alpha = Math.round(alpha / 10) * 10;
+
+    solution = {
+        hw: Math.round(cosTable[alpha] * windSpeed),
+        xw: Math.round(sinTable[alpha] * windSpeed),
+        alpha: alpha
+    };
+
+    document.getElementById("question").innerHTML = `
+        <b>${exam ? "Examen IFR" : "Entraînement"} – Question ${count}/10</b><br>
+        QFU ${String(qfu).padStart(2,"0")}<br>
+        Vent ${String(windDir).padStart(3,"0")}@${windSpeed}kt
+    `;
+
+    document.getElementById("hw").value = "";
+    document.getElementById("xw").value = "";
+    document.getElementById("feedback").innerHTML = "";
+    document.getElementById("nextBtn").classList.add("hidden");
+}
+
+function validate() {
+    const hw = Number(document.getElementById("hw").value);
+    const xw = Number(document.getElementById("xw").value);
+
+    const correct =
+        Math.abs(hw - solution.hw) <= tolerance &&
+        Math.abs(xw - solution.xw) <= tolerance;
+
+    if (correct) score++;
+
+    if (!exam) {
+        document.getElementById("feedback").innerHTML = `
+            <span class="feedback">
+            Alpha = ${solution.alpha}°<br>
+            HW correct = ${solution.hw} kt<br>
+            XW correct = ${solution.xw} kt
+            </span>
+        `;
+        document.getElementById("nextBtn").classList.remove("hidden");
+    } else {
+        next();
+    }
+}
+
+function finish() {
+    const time = ((Date.now() - startTime)/1000).toFixed(1);
+    document.getElementById("inputs").classList.add("hidden");
+    document.getElementById("nextBtn").classList.add("hidden");
+    document.getElementById("question").innerHTML = "";
+    document.getElementById("feedback").innerHTML = "";
+
+    document.getElementById("result").innerHTML = `
+        <b>Résultat ${exam ? "EXAMEN IFR" : "ENTRAÎNEMENT"}</b><br>
+        Score : ${score}/10<br>
+        Temps : ${time} s
+    `;
+}
+</script>
+
+</body>
+</html>
