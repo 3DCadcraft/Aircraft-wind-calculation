@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#111111">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calcul Vent IFR</title>
@@ -25,6 +20,10 @@ button, input, select {
 .feedback { color:#0f0; }
 .hidden { display:none; }
 </style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 </head>
 <body>
 
@@ -89,7 +88,7 @@ function next() {
     const windDirRaw = Math.floor(Math.random()*360) + 1;
     const windSpeed = Math.floor(Math.random()*33) + 3;
 
-    const windDir = Math.round(windDirRaw / 10) * 10; // ARRONDI AVANT AFFICHAGE
+    const windDir = Math.round(windDirRaw / 10) * 10;
 
     let alpha = Math.abs(windDir - runway);
     if (alpha > 180) alpha = 360 - alpha;
@@ -152,9 +151,9 @@ function finish() {
     `;
 }
 
-// --- Service Worker registration ---
+// Service Worker enregistré correctement pour GitHub Pages
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js')
+  navigator.serviceWorker.register('sw.js')
     .then(reg => console.log('Service Worker enregistré.', reg))
     .catch(err => console.error('Erreur SW:', err));
 }
