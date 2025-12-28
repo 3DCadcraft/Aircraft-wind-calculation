@@ -1,11 +1,12 @@
 const CACHE_NAME = 'vent-ifr-cache-v2';
 const urlsToCache = [
-  '/Aircraft-wind-calculation/',
-  '/Aircraft-wind-calculation/index.html',
-  '/Aircraft-wind-calculation/manifest.webmanifest',
-  '/Aircraft-wind-calculation/icon-192.png',
-  '/Aircraft-wind-calculation/icon-512.png'
+  './',
+  'index.html',
+  'manifest.webmanifest',
+  'icon-192.png',
+  'icon-512.png'
 ];
+
 
 self.addEventListener('install', event => {
   event.waitUntil(

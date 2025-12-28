@@ -153,9 +153,11 @@ function finish() {
 
 // Service Worker enregistré correctement pour GitHub Pages
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
+  navigator.serviceWorker.register('sw.js') // PAS de slash au début
     .then(reg => console.log('Service Worker enregistré.', reg))
     .catch(err => console.error('Erreur SW:', err));
+}
+
 }
 </script>
 
