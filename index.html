@@ -5,17 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calcul Vent IFR</title>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background:#111;
-    color:#eee;
-    text-align:center;
-}
-button, input, select {
-    font-size:1.1em;
-    padding:6px;
-    margin:5px;
-}
+body { font-family: Arial, sans-serif; background:#111; color:#eee; text-align:center; }
+button, input, select { font-size:1.1em; padding:6px; margin:5px; }
 .box { margin:15px; font-size:1.3em; }
 .feedback { color:#0f0; }
 .hidden { display:none; }
@@ -75,19 +66,13 @@ function start() {
 }
 
 function next() {
-    if (count === 10) {
-        finish();
-        return;
-    }
-
+    if (count === 10) { finish(); return; }
     count++;
 
     const qfu = Math.floor(Math.random()*36) + 1;
     const runway = qfu * 10;
-
     const windDirRaw = Math.floor(Math.random()*360) + 1;
     const windSpeed = Math.floor(Math.random()*33) + 3;
-
     const windDir = Math.round(windDirRaw / 10) * 10;
 
     let alpha = Math.abs(windDir - runway);
@@ -95,11 +80,7 @@ function next() {
     if (alpha > 90) alpha = 180 - alpha;
     alpha = Math.round(alpha / 10) * 10;
 
-    solution = {
-        hw: Math.round(cosTable[alpha] * windSpeed),
-        xw: Math.round(sinTable[alpha] * windSpeed),
-        alpha: alpha
-    };
+    solution = { hw: Math.round(cosTable[alpha]*windSpeed), xw: Math.round(sinTable[alpha]*windSpeed), alpha };
 
     document.getElementById("question").innerHTML = `
         <b>${exam ? "Examen IFR" : "Entraînement"} – Question ${count}/10</b><br>
@@ -116,14 +97,11 @@ function next() {
 function validate() {
     const hw = Number(document.getElementById("hw").value);
     const xw = Number(document.getElementById("xw").value);
+    const correct = Math.abs(hw-solution.hw)<=tolerance && Math.abs(xw-solution.xw)<=tolerance;
 
-    const correct =
-        Math.abs(hw - solution.hw) <= tolerance &&
-        Math.abs(xw - solution.xw) <= tolerance;
+    if(correct) score++;
 
-    if (correct) score++;
-
-    if (!exam) {
+    if(!exam){
         document.getElementById("feedback").innerHTML = `
             <span class="feedback">
             Alpha = ${solution.alpha}°<br>
@@ -132,18 +110,15 @@ function validate() {
             </span>
         `;
         document.getElementById("nextBtn").classList.remove("hidden");
-    } else {
-        next();
-    }
+    }else{ next(); }
 }
 
 function finish() {
-    const time = ((Date.now() - startTime)/1000).toFixed(1);
+    const time = ((Date.now()-startTime)/1000).toFixed(1);
     document.getElementById("inputs").classList.add("hidden");
     document.getElementById("nextBtn").classList.add("hidden");
     document.getElementById("question").innerHTML = "";
     document.getElementById("feedback").innerHTML = "";
-
     document.getElementById("result").innerHTML = `
         <b>Résultat ${exam ? "EXAMEN IFR" : "ENTRAÎNEMENT"}</b><br>
         Score : ${score}/10<br>
@@ -151,13 +126,12 @@ function finish() {
     `;
 }
 
-// Service Worker enregistré correctement pour GitHub Pages
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')  // chemin RELATIF, pas de /
-    .then(reg => console.log('Service Worker enregistré.', reg))
+// Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js')
+    .then(reg => console.log('SW enregistré.', reg))
     .catch(err => console.error('Erreur SW:', err));
 }
-
 </script>
 
 </body>
